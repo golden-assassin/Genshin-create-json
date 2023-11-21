@@ -22,6 +22,7 @@ def dataSetup(UID,character_count=0,TYPE="攻撃力"):
   parent_dict = Info_base[5]["weapon"]["affixMap"]
   if parent_dict: key, weapon_count = next(iter(parent_dict.items()))
   else: weapon_count = 0
+  weapon_count += 1
   chara = data['avatarInfoList'][character_count]
   love = chara["fetterInfo"]["expLevel"]
   constellation = chara.get("talentIdList", [])
