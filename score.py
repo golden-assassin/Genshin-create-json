@@ -50,25 +50,21 @@ def artifact_Calculation(UID=826487438,character_count=0,TYPE="攻撃力",base=N
             part = artifact["appendPropId"]
             if part == "FIGHT_PROP_CRITICAL_HURT": score += value
             if part == "FIGHT_PROP_CRITICAL": score += value * 2
+            if TYPE == "HP":
+              if part == "FIGHT_PROP_HP_PERCENT": score += value
+            if TYPE == "攻撃力":
+              if part == "FIGHT_PROP_ATTACK_PERCENT":score += value
+            if TYPE == "防御力":
+              if part == "FIGHT_PROP_DEFENSE_PERCENT":score += value
+            if TYPE == "元素熟知":
+              if part == "FIGHT_PROP_ELEMENT_MASTERY":score += value * 0.25
+            if not TYPE:
+              pass
             if j == 0: flower += score
             if j == 1: blade += score
             if j == 2: clock += score
             if j == 3: cup += score
             if j == 4: crown += score
-            if TYPE == "HP":
-              if part == "FIGHT_PROP_HP_PERCENT":
-                Total += value
-            if TYPE == "攻撃力":
-              if part == "FIGHT_PROP_ATTACK_PERCENT":
-                Total += value
-            if TYPE == "防御力":
-              if part == "FIGHT_PROP_DEFENSE_PERCENT":
-                Total += value
-            if TYPE == "元素熟知":
-              if part == "FIGHT_PROP_ELEMENT_MASTERY":
-                Total += value * 0.25
-            if not TYPE:
-              pass
             score = 0
             reliquary = Info_base[j]["flat"]["reliquaryMainstat"]
             sub_ja_name = prop_to_japanese.get(part, "")
