@@ -42,3 +42,6 @@ Genshin ArtifacterのGenerater.pyで使用されているdata.jsonを上書き�
     update_json_file(file_path, result)
     generation(read_json('data.json'))
    ```
+
+
+   <img src="image.png">
