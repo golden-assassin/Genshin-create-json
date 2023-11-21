@@ -1,4 +1,4 @@
-import json
+import json,requests
 
 def artifact_Calculation(UID=826487438,character_count=0,TYPE="攻撃力",base=None):
   prop_to_japanese = {
@@ -27,7 +27,6 @@ def artifact_Calculation(UID=826487438,character_count=0,TYPE="攻撃力",base=N
     content = ja.read()
     jadata = json.loads(content)
   if base is None:
-    import requests
     data = requests.get(f"https://enka.network/api/uid/{UID}").json()
   else:
     data = base
