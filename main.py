@@ -14,14 +14,14 @@ def dataSetup(UID=826487438,character_count=0,TYPE="攻撃力"):
   chara = data['avatarInfoList'][character_count]
   constellation = chara.get("talentIdList", [])
   avatarId = data["playerInfo"]["showAvatarInfoList"][character_count]["avatarId"]
-  characterName = content["ja"][f'{chara_data[f"{avatarId}"]["NameTextMapHash"]}']
   element = Chara[f"{avatarId}"]["Element"]
   element_name = get_element_name(element)
+
   buf = 1
   fight_prop_keys = ["30", "40", "41", "42", "43", "44", "45", "46"]
   for key in fight_prop_keys:
     if round(chara["fightPropMap"][key] * 100) > 0:
-      buf += round(chara["fightPropMap"][key]*100,1) - 1
+      buf += round(chara["fightPropMap"][key] * 100,1) - 1
       break
   gifts = []
   for talent in chara["skillLevelMap"].values():
@@ -46,7 +46,7 @@ def dataSetup(UID=826487438,character_count=0,TYPE="攻撃力"):
     "achieve": data["playerInfo"]["finishAchievementNum"],
     "level": data["playerInfo"]["level"],
     "Character": {
-      "Name": characterName,
+      "Name": content["ja"][f'{chara_data[f"{avatarId}"]["NameTextMapHash"]}'],
       "Const": len(constellation),
       "Level": data["playerInfo"]["showAvatarInfoList"][character_count]["level"],
       "Love": chara["fetterInfo"]["expLevel"],
@@ -113,6 +113,6 @@ if __name__ == "__main__":
   file_path = 'data.json'
   UID = 826487438
   result = dataSetup(UID=UID,TYPE="元素熟知")
-  print(result)
   update_json_file(file_path, result)
   generation(read_json('data.json'))
+  print(result)
