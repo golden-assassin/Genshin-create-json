@@ -2,33 +2,21 @@ import requests,json,os
 from score import *
 from Generater import *
 
-def dataSetup(UID,character_count=0,TYPE="攻撃力"):
+def dataSetup(UID=826487438,character_count=0,TYPE="攻撃力"):
   def get_element_name(element_id):
     elements = {"Fire": "炎", "Water": "水", "Wind": "風", "Electric": "雷","Rock": "岩", "Ice": "氷", "Grass": "草"}
     return elements.get(element_id, "Unknown Element")
+  with open("loc.json", "r", encoding="utf-8") as j: content = json.loads(j.read())
+  with open("characters.json", "r", encoding="utf-8") as c: chara_data = json.loads(c.read())
   data = requests.get(f"https://enka.network/api/uid/{UID}").json()
   Chara = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/characters.json").json()
-  Info_base = data["avatarInfoList"][character_count]["equipList"]
-  result = artifact_Calculation(UID=UID,character_count=character_count,TYPE=TYPE,base=data)
-  weapon = Info_base[5]["flat"]
-  weapon_id = weapon["nameTextMapHash"]
-  with open("loc.json", "r", encoding="utf-8") as ja:
-    jadata = json.loads(ja.read())
-  with open("characters.json", "r", encoding="utf-8") as c:
-    chara_ja_data = json.loads(c.read())
-  weaponStatus = weapon["weaponStats"]
-  weapon_level =  Info_base[5]["weapon"]["level"]
-  weapon_name = jadata["ja"][f"{weapon_id}"]
-  parent_dict = Info_base[5]["weapon"]["affixMap"]
-  if parent_dict: key, weapon_count = next(iter(parent_dict.items()))
-  else: weapon_count = 0
-  weapon_count += 1
+  result = artifact_Calculation(character_count=character_count,TYPE=TYPE,base=data)
   chara = data['avatarInfoList'][character_count]
-  love = chara["fetterInfo"]["expLevel"]
   constellation = chara.get("talentIdList", [])
-  baseHP = chara["fightPropMap"]["1"]
-  baseATK = chara["fightPropMap"]["4"]
-  baseDEF = chara["fightPropMap"]["7"]
+  avatarId = data["playerInfo"]["showAvatarInfoList"][character_count]["avatarId"]
+  characterName = content["ja"][f'{chara_data[f"{avatarId}"]["NameTextMapHash"]}']
+  element = Chara[f"{avatarId}"]["Element"]
+  element_name = get_element_name(element)
   buf = 1
   fight_prop_keys = ["30", "40", "41", "42", "43", "44", "45", "46"]
   for key in fight_prop_keys:
@@ -45,11 +33,13 @@ def dataSetup(UID,character_count=0,TYPE="攻撃力"):
         break
   else:
     pass
-  avatarId = data["playerInfo"]["showAvatarInfoList"][character_count]["avatarId"]
-  chara_level = data["playerInfo"]["showAvatarInfoList"][character_count]["level"]
-  characterName = jadata["ja"][f'{chara_ja_data[f"{avatarId}"]["NameTextMapHash"]}']
-  element = Chara[f"{avatarId}"]["Element"]
-  element_name = get_element_name(element)
+
+  weapon = chara["equipList"][5]["flat"]
+  parent_dict = chara["equipList"][5]["weapon"]["affixMap"]
+  if parent_dict: key, weapon_rate = next(iter(parent_dict.items()))
+  else: weapon_rate = 0
+  weapon_rate += 1
+
   output_json = {
     "uid": UID,
     "name": data["playerInfo"]["nickname"],
@@ -58,8 +48,8 @@ def dataSetup(UID,character_count=0,TYPE="攻撃力"):
     "Character": {
       "Name": characterName,
       "Const": len(constellation),
-      "Level": chara_level,
-      "Love": love,
+      "Level": data["playerInfo"]["showAvatarInfoList"][character_count]["level"],
+      "Love": chara["fetterInfo"]["expLevel"],
       "Status": {
         "HP": round(chara["fightPropMap"]["2000"],1),
         "攻撃力": round(chara["fightPropMap"]["2001"],1),
@@ -76,20 +66,20 @@ def dataSetup(UID,character_count=0,TYPE="攻撃力"):
         "爆発": gifts[2],
       },
       "Base":{
-        "HP": round(baseHP,1),
-        "攻撃力": round(baseATK,1),
-        "防御力": round(baseDEF,1)
+        "HP": round(chara["fightPropMap"]["1"],1),
+        "攻撃力": round(chara["fightPropMap"]["4"],1),
+        "防御力": round(chara["fightPropMap"]["7"],1)
       },
     },
     "Weapon": {
-      "name": weapon_name,
-      "Level": weapon_level,
-      "totu": weapon_count,
+      "name": content["ja"][f"{weapon['nameTextMapHash']}"],
+      "Level": chara["equipList"][5]["weapon"]["level"],
+      "totu": weapon_rate,
       "rarelity": weapon["rankLevel"],
-      "BaseATK": weaponStatus[0]["statValue"],
+      "BaseATK": weapon["weaponStats"][0]["statValue"],
       "Sub": {
-        "name": jadata["ja"][weaponStatus[1]["appendPropId"]],
-        "value": weaponStatus[1]["statValue"]
+        "name": content["ja"][weapon["weaponStats"][1]["appendPropId"]],
+        "value": weapon["weaponStats"][1]["statValue"]
       }
     },
     "Score": {
