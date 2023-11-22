@@ -1,6 +1,9 @@
-import json,requests
+import json
 
-def artifact_Calculation(UID=826487438,character_count=0,TYPE="攻撃力",base=None):
+def artifact_Calculation(character_count=0,TYPE="攻撃力",base=None):
+  if base is None:
+    return
+  else: data = base
   prop_to_japanese = {
     "FIGHT_PROP_HP_PERCENT": "HPパーセンテージ",
     "FIGHT_PROP_ATTACK_PERCENT": "攻撃パーセンテージ",
@@ -21,28 +24,21 @@ def artifact_Calculation(UID=826487438,character_count=0,TYPE="攻撃力",base=N
     "FIGHT_PROP_ICE_ADD_HURT": "氷元素ダメージ",
     "FIGHT_PROP_ROCK_ADD_HURT": "岩元素ダメージ",
     "FIGHT_PROP_GRASS_ADD_HURT": "草元素ダメージ",
-
   }
-  with open("loc.json", "r", encoding="utf-8") as ja:
-    content = ja.read()
-    jadata = json.loads(content)
-  if base is None:
-    data = requests.get(f"https://enka.network/api/uid/{UID}").json()
-  else:
-    data = base
+  with open("loc.json", "r", encoding="utf-8") as loc:
+    content = json.loads(loc.read())
   if "avatarInfoList" in data and len(data["avatarInfoList"]) > 0:
     first_avatar_info = data["avatarInfoList"][character_count]
     if "equipList" in first_avatar_info:
-      Info_base = first_avatar_info["equipList"]
-      if Info_base and len(Info_base) > 0:
+      Info = first_avatar_info["equipList"]
+      if Info and len(Info) > 0:
         flower, blade, clock, cup, crown = 0, 0, 0, 0, 0
         score,Total = 0,0
-        mainlist = []
-        receipt = []
+        mainlist,receipt = [],[]
         for j in range(5):
           sublist = []
           for i in range(4):
-            artifact = Info_base[j]["flat"]["reliquarySubstats"][i]
+            artifact = Info[j]["flat"]["reliquarySubstats"][i]
             statValue = float(artifact["statValue"])
             converted_value = round(statValue, 1)
             value = int(converted_value) if converted_value.is_integer() else converted_value
@@ -57,19 +53,18 @@ def artifact_Calculation(UID=826487438,character_count=0,TYPE="攻撃力",base=N
               if part == "FIGHT_PROP_DEFENSE_PERCENT":score += value
             if TYPE == "元素熟知":
               if part == "FIGHT_PROP_ELEMENT_MASTERY":score += value * 0.25
-            if not TYPE:
-              pass
+            if TYPE is None: pass
             if j == 0: flower += score
             if j == 1: blade += score
             if j == 2: clock += score
             if j == 3: cup += score
             if j == 4: crown += score
             score = 0
-            reliquary = Info_base[j]["flat"]["reliquaryMainstat"]
+            reliquary = Info[j]["flat"]["reliquaryMainstat"]
             sub_ja_name = prop_to_japanese.get(part, "")
             sublist.append({
-                "option": sub_ja_name,
-                "value": value,
+              "option": sub_ja_name,
+              "value": value,
             })
           receipt.append(sublist)
           main_ja_name = prop_to_japanese.get(reliquary["mainPropId"], "")
@@ -80,7 +75,7 @@ def artifact_Calculation(UID=826487438,character_count=0,TYPE="攻撃力",base=N
         for i in range(5):
           current_json = {
             name[i]: {
-              "type": jadata["ja"][f"{Info_base[i]['flat']['setNameTextMapHash']}"],
+              "type": content["ja"][f"{Info[i]['flat']['setNameTextMapHash']}"],
               "Level": 20,
               "rarelity": 5,
               "main": mainlist[i],
