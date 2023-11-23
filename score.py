@@ -1,6 +1,6 @@
 import json
 
-def artifact_Calculation(character_count=0,TYPE="攻撃力",base=None):
+def artifact_Calculation(count=0,TYPE="攻撃力",base=None):
   if base is None:
     return
   else: data = base
@@ -28,7 +28,7 @@ def artifact_Calculation(character_count=0,TYPE="攻撃力",base=None):
   with open("loc.json", "r", encoding="utf-8") as loc:
     content = json.loads(loc.read())
   if "avatarInfoList" in data and len(data["avatarInfoList"]) > 0:
-    first_avatar_info = data["avatarInfoList"][character_count]
+    first_avatar_info = data["avatarInfoList"][count]
     if "equipList" in first_avatar_info:
       Info = first_avatar_info["equipList"]
       if Info and len(Info) > 0:
