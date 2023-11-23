@@ -1,16 +1,22 @@
-import requests,json
+import requests
 from score import *
-from Generater import *
+
+default_uid = 826487438
+
+def response(uid=default_uid):
+  user = requests.get(f"https://enka.network/api/uid/{uid}").json()
+  characters = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/characters.json").json()
+  loc = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/loc.json").json()
+  return user,characters,loc
 
 def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
   def get_element_name(element_id):
     elements = {"Fire": "炎", "Water": "水", "Wind": "風", "Electric": "雷","Rock": "岩", "Ice": "氷", "Grass": "草"}
     return elements.get(element_id, "Unknown Element")
-  with open("loc.json", "r", encoding="utf-8") as j: content = json.loads(j.read())
-  with open("characters.json", "r", encoding="utf-8") as c: chara_data = json.loads(c.read())
-  data = requests.get(f"https://enka.network/api/uid/{UID}").json()
-  Chara = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/characters.json").json()
-  result = artifact_Calculation(count=count,TYPE=TYPE,base=data)
+  response_data = response(uid=UID)
+  if response_data:
+    data, Chara, loc = response_data
+  result = artifact_Calculation(count=count,TYPE=TYPE,data=data,loc=loc)
   chara = data['avatarInfoList'][count]
   constellation = chara.get("talentIdList", [])
   avatarId = data["playerInfo"]["showAvatarInfoList"][count]["avatarId"]
@@ -43,10 +49,9 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
   output_json = {
     "uid": UID,
     "name": data["playerInfo"]["nickname"],
-    "achieve": data["playerInfo"]["finishAchievementNum"],
     "level": data["playerInfo"]["level"],
     "Character": {
-      "Name": content["ja"][f'{chara_data[f"{avatarId}"]["NameTextMapHash"]}'],
+      "Name": loc["ja"][f'{Chara[f"{avatarId}"]["NameTextMapHash"]}'],
       "Const": len(constellation),
       "Level": data["playerInfo"]["showAvatarInfoList"][count]["level"],
       "Love": chara["fetterInfo"]["expLevel"],
@@ -72,13 +77,13 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
       },
     },
     "Weapon": {
-      "name": content["ja"][f"{weapon['nameTextMapHash']}"],
+      "name": loc["ja"][f"{weapon['nameTextMapHash']}"],
       "Level": chara["equipList"][5]["weapon"]["level"],
       "totu": weapon_rate,
       "rarelity": weapon["rankLevel"],
       "BaseATK": weapon["weaponStats"][0]["statValue"],
       "Sub": {
-        "name": content["ja"][weapon["weaponStats"][1]["appendPropId"]],
+        "name": loc["ja"][weapon["weaponStats"][1]["appendPropId"]],
         "value": weapon["weaponStats"][1]["statValue"]
       }
     },
