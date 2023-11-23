@@ -20,7 +20,6 @@ Genshin ArtifacterのGenerater.pyで使用されているdata.jsonを上書き�
 2. 関数呼び出し
    ```python
    import json,os
-   from score import *
    from main import *
    from Generater import *
 
