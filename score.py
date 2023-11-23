@@ -1,9 +1,7 @@
 import json
 
-def artifact_Calculation(count=0,TYPE="攻撃力",base=None):
-  if base is None:
-    return
-  else: data = base
+def artifact_Calculation(count=0,TYPE="攻撃力",data=None,loc=None):
+  if data is None or loc is None: return
   prop_to_japanese = {
     "FIGHT_PROP_HP_PERCENT": "HPパーセンテージ",
     "FIGHT_PROP_ATTACK_PERCENT": "攻撃パーセンテージ",
@@ -25,8 +23,6 @@ def artifact_Calculation(count=0,TYPE="攻撃力",base=None):
     "FIGHT_PROP_ROCK_ADD_HURT": "岩元素ダメージ",
     "FIGHT_PROP_GRASS_ADD_HURT": "草元素ダメージ",
   }
-  with open("loc.json", "r", encoding="utf-8") as loc:
-    content = json.loads(loc.read())
   if "avatarInfoList" in data and len(data["avatarInfoList"]) > 0:
     first_avatar_info = data["avatarInfoList"][count]
     if "equipList" in first_avatar_info:
@@ -53,7 +49,6 @@ def artifact_Calculation(count=0,TYPE="攻撃力",base=None):
               if part == "FIGHT_PROP_DEFENSE_PERCENT":score += value
             if TYPE == "元素熟知":
               if part == "FIGHT_PROP_ELEMENT_MASTERY":score += value * 0.25
-            if TYPE is None: pass
             if j == 0: flower += score
             if j == 1: blade += score
             if j == 2: clock += score
@@ -75,7 +70,7 @@ def artifact_Calculation(count=0,TYPE="攻撃力",base=None):
         for i in range(5):
           current_json = {
             name[i]: {
-              "type": content["ja"][f"{Info[i]['flat']['setNameTextMapHash']}"],
+              "type": loc["ja"][f"{Info[i]['flat']['setNameTextMapHash']}"],
               "Level": 20,
               "rarelity": 5,
               "main": mainlist[i],
