@@ -1,4 +1,4 @@
-import requests,json,os
+import requests,json
 from score import *
 from Generater import *
 
