@@ -95,25 +95,3 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
     "元素": element_name
   }
   return output_json
-
-if __name__ == "__main__":
-  def update_json_file(file_path, new_data):
-    if os.path.exists(file_path):
-      try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-          existing_data = json.load(file)
-      except json.decoder.JSONDecodeError:
-        existing_data = {}
-    else:
-      existing_data = {}
-    existing_data.update(new_data)
-    with open(file_path, 'w', encoding='utf-8') as file:
-      json.dump(existing_data, file, ensure_ascii=False, indent=2)
-
-  file_path = 'data.json'
-  UID = 826487438
-  result = dataSetup(UID=UID,TYPE="元素熟知")
-  update_json_file(file_path, result)
-  generation(read_json('data.json'))
-  print(result)
-  print(result["Score"]["total"])
