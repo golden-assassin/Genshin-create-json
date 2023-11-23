@@ -20,8 +20,8 @@ Genshin ArtifacterのGenerater.pyで使用されているdata.jsonを上書き�
 2. 関数呼び出し
    ```python
    import json,os
-   from main import *
-   from Generater import *
+   from main import dataSetup
+   from Generater import generation,read_json
    
    if __name__ == "__main__":
      def update_json_file(file_path, new_data):
