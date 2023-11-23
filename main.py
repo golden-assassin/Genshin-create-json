@@ -2,7 +2,7 @@ import requests,json,os
 from score import *
 from Generater import *
 
-def dataSetup(UID=826487438,character_count=0,TYPE="攻撃力"):
+def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
   def get_element_name(element_id):
     elements = {"Fire": "炎", "Water": "水", "Wind": "風", "Electric": "雷","Rock": "岩", "Ice": "氷", "Grass": "草"}
     return elements.get(element_id, "Unknown Element")
@@ -10,10 +10,10 @@ def dataSetup(UID=826487438,character_count=0,TYPE="攻撃力"):
   with open("characters.json", "r", encoding="utf-8") as c: chara_data = json.loads(c.read())
   data = requests.get(f"https://enka.network/api/uid/{UID}").json()
   Chara = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/characters.json").json()
-  result = artifact_Calculation(character_count=character_count,TYPE=TYPE,base=data)
-  chara = data['avatarInfoList'][character_count]
+  result = artifact_Calculation(count=count,TYPE=TYPE,base=data)
+  chara = data['avatarInfoList'][count]
   constellation = chara.get("talentIdList", [])
-  avatarId = data["playerInfo"]["showAvatarInfoList"][character_count]["avatarId"]
+  avatarId = data["playerInfo"]["showAvatarInfoList"][count]["avatarId"]
   element = Chara[f"{avatarId}"]["Element"]
   element_name = get_element_name(element)
 
@@ -36,7 +36,7 @@ def dataSetup(UID=826487438,character_count=0,TYPE="攻撃力"):
 
   weapon = chara["equipList"][5]["flat"]
   parent_dict = chara["equipList"][5]["weapon"]["affixMap"]
-  if parent_dict: key, weapon_rate = next(iter(parent_dict.items()))
+  if parent_dict: _, weapon_rate = next(iter(parent_dict.items()))
   else: weapon_rate = 0
   weapon_rate += 1
 
@@ -48,7 +48,7 @@ def dataSetup(UID=826487438,character_count=0,TYPE="攻撃力"):
     "Character": {
       "Name": content["ja"][f'{chara_data[f"{avatarId}"]["NameTextMapHash"]}'],
       "Const": len(constellation),
-      "Level": data["playerInfo"]["showAvatarInfoList"][character_count]["level"],
+      "Level": data["playerInfo"]["showAvatarInfoList"][count]["level"],
       "Love": chara["fetterInfo"]["expLevel"],
       "Status": {
         "HP": round(chara["fightPropMap"]["2000"],1),
@@ -116,3 +116,4 @@ if __name__ == "__main__":
   update_json_file(file_path, result)
   generation(read_json('data.json'))
   print(result)
+  print(result["Score"]["total"])
