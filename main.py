@@ -59,7 +59,7 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
         "UI_Name": UI_Name,
         "UI_Gacha": UI_Gacha
       },
-      "Name": loc["ja"][f'{c[str(avatarId)]["NameTextMapHash"]}'],
+      "Name": loc["ja"][str(c[str(avatarId)]["NameTextMapHash"])],
       "Const": len(constellation),
       "Level": d["playerInfo"]["showAvatarInfoList"][count]["level"],
       "Love": chara["fetterInfo"]["expLevel"],
