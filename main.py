@@ -15,12 +15,12 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
     return elements.get(element_id, "Unknown Element")
   response_data = response(uid=UID)
   if response_data:
-    data, Chara, loc = response_data
-  result = artifact_Calculation(count=count,TYPE=TYPE,data=data,loc=loc)
-  chara = data['avatarInfoList'][count]
+    d, c, loc = response_data
+  result = artifact_Calculation(count=count,TYPE=TYPE,data=d,loc=loc)
+  chara = d['avatarInfoList'][count]
   constellation = chara.get("talentIdList", [])
-  avatarId = data["playerInfo"]["showAvatarInfoList"][count]["avatarId"]
-  element = Chara[f"{avatarId}"]["Element"]
+  avatarId = d["playerInfo"]["showAvatarInfoList"][count]["avatarId"]
+  element = c[str(avatarId)]["Element"]
   element_name = get_element_name(element)
 
   buf = 1
@@ -46,14 +46,22 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
   else: weapon_rate = 0
   weapon_rate += 1
 
+  UI_Name = c[str(avatarId)]["SideIconName"].replace("UI_AvatarIcon_Side_", "")
+  UI_Gacha = "UI_Gacha_AvatarImg_" + UI_Name
+
   output_json = {
     "uid": UID,
-    "name": data["playerInfo"]["nickname"],
-    "level": data["playerInfo"]["level"],
+    "name": d["playerInfo"]["nickname"],
+    "level": d["playerInfo"]["level"],
     "Character": {
-      "Name": loc["ja"][f'{Chara[f"{avatarId}"]["NameTextMapHash"]}'],
+      "UI_": {
+        "avatarId": avatarId,
+        "UI_Name": UI_Name,
+        "UI_Gacha": UI_Gacha
+      },
+      "Name": loc["ja"][f'{c[str(avatarId)]["NameTextMapHash"]}'],
       "Const": len(constellation),
-      "Level": data["playerInfo"]["showAvatarInfoList"][count]["level"],
+      "Level": d["playerInfo"]["showAvatarInfoList"][count]["level"],
       "Love": chara["fetterInfo"]["expLevel"],
       "Status": {
         "HP": round(chara["fightPropMap"]["2000"],1),
@@ -77,7 +85,8 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
       },
     },
     "Weapon": {
-      "name": loc["ja"][f"{weapon['nameTextMapHash']}"],
+      "UI_weapon": weapon["icon"] ,
+      "name": loc["ja"][str(weapon["nameTextMapHash"])],
       "Level": chara["equipList"][5]["weapon"]["level"],
       "totu": weapon_rate,
       "rarelity": weapon["rankLevel"],
