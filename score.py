@@ -28,7 +28,7 @@ def artifact_Calculation(count=0,TYPE="攻撃力",data=None,loc=None):
     if "equipList" in first_avatar_info:
       Info = first_avatar_info["equipList"]
       if Info and len(Info) > 0:
-        flower, blade, clock, cup, crown = 0, 0, 0, 0, 0
+        flower, wing, clock, cup, crown = 0, 0, 0, 0, 0
         score,Total = 0,0
         mainlist,receipt = [],[]
         for j in range(5):
@@ -47,7 +47,7 @@ def artifact_Calculation(count=0,TYPE="攻撃力",data=None,loc=None):
             if TYPE == "元素チャージ効率" and part == "FIGHT_PROP_CHARGE_EFFICIENCY": score += value
             if TYPE == "元素熟知" and part == "FIGHT_PROP_ELEMENT_MASTERY": score += value * 0.25
             if j == 0: flower += score
-            if j == 1: blade += score
+            if j == 1: wing += score
             if j == 2: clock += score
             if j == 3: cup += score
             if j == 4: crown += score
@@ -61,7 +61,7 @@ def artifact_Calculation(count=0,TYPE="攻撃力",data=None,loc=None):
           receipt.append(sublist)
           main_ja_name = prop_to_japanese.get(reliquary["mainPropId"], "")
           mainlist.append({"option":main_ja_name,"value":reliquary["statValue"]})
-        Total += (flower + blade + clock + cup + crown)
+        Total += (flower + wing + clock + cup + crown)
         result_json = {}
         for i,parts in enumerate(['flower',"wing","clock","cup","crown"]):
           artifactID = Info[i]['flat']['setNameTextMapHash']
@@ -82,7 +82,7 @@ def artifact_Calculation(count=0,TYPE="攻撃力",data=None,loc=None):
     "State": TYPE,
     "total": Total,
     "flower": flower,
-    "wing": blade,
+    "wing": wing,
     "clock": clock,
     "cup": cup,
     "crown": crown,
