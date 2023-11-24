@@ -41,16 +41,11 @@ def artifact_Calculation(count=0,TYPE="攻撃力",data=None,loc=None):
             part = artifact["appendPropId"]
             if part == "FIGHT_PROP_CRITICAL_HURT": score += value
             if part == "FIGHT_PROP_CRITICAL": score += value * 2
-            if TYPE == "HP":
-              if part == "FIGHT_PROP_HP_PERCENT": score += value
-            if TYPE == "攻撃力":
-              if part == "FIGHT_PROP_ATTACK_PERCENT":score += value
-            if TYPE == "防御力":
-              if part == "FIGHT_PROP_DEFENSE_PERCENT":score += value
-            if TYPE == "元素チャージ効率":
-              if part == "FIGHT_PROP_CHARGE_EFFICIENCY":score += value
-            if TYPE == "元素熟知":
-              if part == "FIGHT_PROP_ELEMENT_MASTERY":score += value * 0.25
+            if TYPE == "HP" and part == "FIGHT_PROP_HP_PERCENT": score += value
+            if TYPE == "攻撃力" and part == "FIGHT_PROP_ATTACK_PERCENT": score += value
+            if TYPE == "防御力" and part == "FIGHT_PROP_DEFENSE_PERCENT": score += value
+            if TYPE == "元素チャージ効率" and part == "FIGHT_PROP_CHARGE_EFFICIENCY": score += value
+            if TYPE == "元素熟知" and part == "FIGHT_PROP_ELEMENT_MASTERY": score += value * 0.25
             if j == 0: flower += score
             if j == 1: blade += score
             if j == 2: clock += score
