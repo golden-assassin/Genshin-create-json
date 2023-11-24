@@ -118,4 +118,23 @@ import requests,os
             if not details:
                 continue
     artifact_path_check()
+# 天賦
+        try:
+            Talent = Image.open(f'{cwd}/character/{CharacterName}/{t}.png').resize((50,50)).convert('RGBA')
+        except:
+            Talent = Image.open(f'{cwd}/character/ガイア/avatar.png').resize((50,50)).convert('RGBA')
+# 命ノ星座
+            try:
+                CharaC = Image.open(f'{cwd}/character/{CharacterName}/{c}.png').convert("RGBA").resize((45,45))
+            except:
+                CharaC = Image.open(f'{cwd}/character/ガイア/avatar.png').convert("RGBA").resize((45,45))
 ```
+
+
+
+<br>
+
+
+
+
+
