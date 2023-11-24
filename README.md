@@ -77,16 +77,13 @@ import requests,os
             elif os.path.exists(f'{cwd}/character/{CharacterName}/avatar.png'):
                 CharacterImage = Image.open(f'{cwd}/character/{CharacterName}/avatar.png').convert("RGBA")
             else:
-                try:
-                    response = requests.get(Gacha_url)
-                    response.raise_for_status()
-                    janame = loc["ja"][f"{characters[str(avatarId)]['NameTextMapHash']}"]
-                    os.makedirs(f'{cwd}/character/{janame}', exist_ok=True)
-                    with open(f'{cwd}/character/{janame}/avatar.png', 'wb') as img_file:
-                        img_file.write(response.content)
-                    CharacterImage = Image.open(f'{cwd}/character/{janame}/avatar.png').convert("RGBA")
-                except:
-                    CharacterImage = Image.open(f'{cwd}/character/ガイア/avatar.png').convert("RGBA")
+                response = requests.get(Gacha_url)
+                response.raise_for_status()
+                janame = loc["ja"][f"{characters[str(avatarId)]['NameTextMapHash']}"]
+                os.makedirs(f'{cwd}/character/{janame}', exist_ok=True)
+                with open(f'{cwd}/character/{janame}/avatar.png', 'wb') as img_file:
+                img_file.write(response.content)
+                CharacterImage = Image.open(f'{cwd}/character/{janame}/avatar.png').convert("RGBA")
 
 # 武器
     try:
