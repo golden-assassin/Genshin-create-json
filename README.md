@@ -1,8 +1,9 @@
 # Genshin-create-json
 
-Genshin ArtifacterのGenerater.pyで使用されているdata.jsonを上書きし、新しいデータを導入して画像を生成します。このリポジトリのファイルは全てGenerater.pyと同じ階層に配置してください。
+Genshin ArtifacterのGenerater.pyで使用されているdata.jsonを上書きし、新しいデータを導入して画像を生成します。このリポジトリのファイルは全てGenerater.pyと同じ階層に配置してください。<br>
+<br>使用方法3のコードに書き換えなくても動きます、画像が無い場合にenkaから拾ってくるだけのコードです
 <div>2時間で書いたのでコード汚いです<br>
-2023/11/21 16:07</div>
+2023/11/21 16:07<br></div>
 
 ## 使用方法
 
