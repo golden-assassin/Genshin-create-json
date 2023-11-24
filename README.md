@@ -91,14 +91,12 @@ import requests,os
     except FileNotFoundError:
         print(WeaponName,UI_weapon_Gacha)
         Gacha_weapon_url = f"https://enka.network/ui/{UI_weapon_Gacha}.png"
-        try:
-            res = requests.get(Gacha_weapon_url)
-            res.raise_for_status()
-            with open(f'{cwd}/weapon/{WeaponName}.png', 'wb') as f:
-                f.write(res.content)
-            Weapon = Image.open(f'{cwd}/weapon/{WeaponName}.png').convert("RGBA").resize((128, 128))
-        except:
-            Weapon = Image.open(f'{cwd}/weapon/アモスの弓.png').convert("RGBA").resize((128, 128))
+        res = requests.get(Gacha_weapon_url)
+        res.raise_for_status()
+        with open(f'{cwd}/weapon/{WeaponName}.png', 'wb') as f:
+            f.write(res.content)
+        Weapon = Image.open(f'{cwd}/weapon/{WeaponName}.png').convert("RGBA").resize((128, 128))
+
 # 聖遺物
     def artifact_path_check():
         for _,parts in enumerate(['flower', "wing", "clock", "cup", "crown"]):
