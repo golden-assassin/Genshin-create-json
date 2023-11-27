@@ -54,7 +54,7 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
     "name": d["playerInfo"]["nickname"],
     "level": d["playerInfo"]["level"],
     "Character": {
-      "UI_": {
+      "UI": {
         "avatarId": avatarId,
         "UI_Name": UI_Name,
         "UI_Gacha": UI_Gacha
