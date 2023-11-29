@@ -2,26 +2,32 @@ import requests
 from score import *
 
 default_uid = 826487438
+json_path = ["loc.json","characters.json"]
 
-def response(uid=default_uid):
+def request(uid=default_uid):
+  host = "https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store"
   user = requests.get(f"https://enka.network/api/uid/{uid}").json()
-  characters = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/characters.json").json()
-  loc = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/loc.json").json()
+  try:
+    with open(json_path[0], 'r', encoding='utf-8') as lfile: loc = json.load(lfile)
+    with open(json_path[1], 'r', encoding='utf-8') as cfile: characters = json.load(cfile)
+  except:
+    loc = requests.get(f"{host}/loc.json").json()
+    characters = requests.get(f"{host}/characters.json").json()
   return user,characters,loc
 
+def get_element_name(element_id):
+  elements = {"Fire": "炎", "Water": "水", "Wind": "風", "Electric": "雷","Rock": "岩", "Ice": "氷", "Grass": "草"}
+  return elements.get(element_id, "無")
+
 def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
-  def get_element_name(element_id):
-    elements = {"Fire": "炎", "Water": "水", "Wind": "風", "Electric": "雷","Rock": "岩", "Ice": "氷", "Grass": "草"}
-    return elements.get(element_id, "Unknown Element")
-  response_data = response(uid=UID)
-  if response_data:
-    d, c, loc = response_data
-  result = artifact_Calculation(count=count,TYPE=TYPE,data=d,loc=loc)
-  chara = d['avatarInfoList'][count]
+  response = request(uid=UID)
+  if response:
+    data, character, loc = response
+  result = artifact_Calculation(count=count,TYPE=TYPE,data=data,loc=loc)
+  chara = data['avatarInfoList'][count]
   constellation = chara.get("talentIdList", [])
-  avatarId = d["playerInfo"]["showAvatarInfoList"][count]["avatarId"]
-  element = c[str(avatarId)]["Element"]
-  element_name = get_element_name(element)
+  avatarId = data["playerInfo"]["showAvatarInfoList"][count]["avatarId"]
+  element_name = get_element_name(character[str(avatarId)]["Element"])
 
   buf = 1
   fight_prop_keys = ["30", "40", "41", "42", "43", "44", "45", "46"]
@@ -29,12 +35,18 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
     if round(chara["fightPropMap"][key] * 100) > 0:
       buf += round(chara["fightPropMap"][key] * 100,1) - 1
       break
-  gifts = []
-  for talent in chara["skillLevelMap"].values():
-    gifts.append(talent)
+
+  talent = []
+  talents = chara["skillLevelMap"].values()
+  for tal in talents: talent.append(tal)
+  print(len(talents))
+  if len(talents) > 3:
+    print(talent,talent[2])
+    del talent[2]
+
   if "proudSkillExtraLevelMap" in chara:
     for idx, _ in enumerate(chara["proudSkillExtraLevelMap"].values(), start=1):
-      gifts[idx] += 3
+      talent[idx] += 3
       if idx >= 2:
         break
   else:
@@ -46,22 +58,22 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
   else: weapon_rate = 0
   weapon_rate += 1
 
-  UI_Name = c[str(avatarId)]["SideIconName"].replace("UI_AvatarIcon_Side_", "")
+  UI_Name = character[str(avatarId)]["SideIconName"].replace("UI_AvatarIcon_Side_", "")
   UI_Gacha = "UI_Gacha_AvatarImg_" + UI_Name
 
   output_json = {
     "uid": UID,
-    "name": d["playerInfo"]["nickname"],
-    "level": d["playerInfo"]["level"],
+    "name": data["playerInfo"]["nickname"],
+    "level": data["playerInfo"]["level"],
     "Character": {
       "UI": {
         "avatarId": avatarId,
         "UI_Name": UI_Name,
         "UI_Gacha": UI_Gacha
       },
-      "Name": loc["ja"][str(c[str(avatarId)]["NameTextMapHash"])],
+      "Name": loc["ja"][str(character[str(avatarId)]["NameTextMapHash"])],
       "Const": len(constellation),
-      "Level": d["playerInfo"]["showAvatarInfoList"][count]["level"],
+      "Level": data["playerInfo"]["showAvatarInfoList"][count]["level"],
       "Love": chara["fetterInfo"]["expLevel"],
       "Status": {
         "HP": round(chara["fightPropMap"]["2000"],1),
@@ -74,9 +86,9 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
         f"{element_name}元素ダメージ": round(buf,1)
       },
       "Talent": {
-        "通常": gifts[0],
-        "スキル": gifts[1],
-        "爆発": gifts[2],
+        "通常": talent[0],
+        "スキル": talent[1],
+        "爆発": talent[2],
       },
       "Base":{
         "HP": round(chara["fightPropMap"]["1"],1),
