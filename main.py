@@ -19,11 +19,12 @@ def get_element_name(element_id):
   elements = {"Fire": "炎", "Water": "水", "Wind": "風", "Electric": "雷","Rock": "岩", "Ice": "氷", "Grass": "草"}
   return elements.get(element_id, "無")
 
-def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
+def dataSetup(UID=826487438, count=0, TYPE="攻撃力", lang="ja"):
   response = request(uid=UID)
   if response:
     user, character, loc = response
-  result = artifact_Calculation(count=count,TYPE=TYPE,data=user,loc=loc)
+
+  result = artifact_Calculation(count=count, TYPE=TYPE, user=user, loc=loc)
   user_character = user['avatarInfoList'][count]
   constellation = user_character.get("talentIdList", [])
   avatarId = user["playerInfo"]["showAvatarInfoList"][count]["avatarId"]
@@ -69,7 +70,7 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
         "UI_Name": UI_Name,
         "UI_Gacha": UI_Gacha
       },
-      "Name": loc["ja"][str(character[str(avatarId)]["NameTextMapHash"])],
+      "Name": loc[str(lang)][str(character[str(avatarId)]["NameTextMapHash"])],
       "Const": len(constellation),
       "Level": user["playerInfo"]["showAvatarInfoList"][count]["level"],
       "Love": user_character["fetterInfo"]["expLevel"],
@@ -96,13 +97,13 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
     },
     "Weapon": {
       "UI_weapon": weapon["icon"] ,
-      "name": loc["ja"][str(weapon["nameTextMapHash"])],
+      "name": loc[str(lang)][str(weapon["nameTextMapHash"])],
       "Level": user_character["equipList"][5]["weapon"]["level"],
       "totu": weapon_rate,
       "rarelity": weapon["rankLevel"],
       "BaseATK": weapon["weaponStats"][0]["statValue"],
       "Sub": {
-        "name": loc["ja"][weapon["weaponStats"][1]["appendPropId"]],
+        "name": loc[str(lang)][weapon["weaponStats"][1]["appendPropId"]],
         "value": weapon["weaponStats"][1]["statValue"]
       }
     },
