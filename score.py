@@ -33,7 +33,7 @@ def artifact_Calculation(count=0,TYPE="攻撃力",user=None,loc=None):
         for j in range(5):
           sublist = []
           for i in range(4):
-            if j < len(Info) and i < len(Info[j]["flat"]["reliquarySubstats"]):
+            if j < len(Info) and "flat" in Info[j] and "reliquarySubstats" in Info[j]["flat"] and i < len(Info[j]["flat"]["reliquarySubstats"]):
               artifact = Info[j]["flat"]["reliquarySubstats"][i]
               statValue = float(artifact["statValue"])
               converted_value = round(statValue, 1)
