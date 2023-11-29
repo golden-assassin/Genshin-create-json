@@ -1,7 +1,6 @@
 import json
 
 def artifact_Calculation(count=0,TYPE="攻撃力",data=None,loc=None):
-  if data is None or loc is None: return
   prop_to_japanese = {
     "FIGHT_PROP_HP_PERCENT": "HPパーセンテージ",
     "FIGHT_PROP_ATTACK_PERCENT": "攻撃パーセンテージ",
