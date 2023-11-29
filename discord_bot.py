@@ -23,12 +23,12 @@ class DeleteButton(discord.ui.Button):
     await interaction.message.delete()
 
 class CharaButton(discord.ui.Button):
-  def __init__(self, label: str, uid: str, dict, index):
+  def __init__(self, label: str, uid: str, dict, lang: str, index):
     super().__init__(style=discord.ButtonStyle.blurple, label=label)
     self.dict = dict
     self.uid = uid
     self.index = index
-
+    self.lang = lang
   async def callback(self, interaction: discord.Interaction):
     choices = ["攻撃力", "防御力", "HP", "元素チャージ効率", "元素熟知"]
     options = [discord.SelectOption(label=choice, value=choice) for choice in choices]
@@ -39,17 +39,17 @@ class CharaButton(discord.ui.Button):
   async def select_callback(self, interaction: discord.Interaction):
     selected_option = interaction.data['values'][0]
     message = await interaction.response.send_message(f'選択されたオプション: {selected_option}')
-    result = dataSetup(UID=self.uid, count=self.index, TYPE=selected_option)
+    result = dataSetup(UID=self.uid, count=self.index, TYPE=selected_option, lang=self.lang)
     file_path = 'data.json'
     print(result)
     update_json_file(file_path, result)
-    generation(read_json('data.json'))
+    generation(read_json(file_path))
     embed = discord.Embed()
     embed.set_image(url=f"attachment://upload.png")
     await interaction.followup.send(file=discord.File(fp="Image.png", filename="upload.png", spoiler=False), embed=embed)
     await message.delete_original_response()
 
-def Catch(uid):
+def Catch(uid, lang="ja"):
   import requests
   catch = list()
   user = requests.get(f"https://enka.network/api/uid/{uid}").json()
@@ -62,22 +62,23 @@ def Catch(uid):
     chara = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/characters.json").json()
   for count in range(len(user['avatarInfoList'])):
     avatarId = user["playerInfo"]["showAvatarInfoList"][count]["avatarId"]
-    name = loc["ja"][str(chara[str(avatarId)]["NameTextMapHash"])]
+    name = loc[lang][str(chara[str(avatarId)]["NameTextMapHash"])]
     level = user["playerInfo"]["showAvatarInfoList"][count]["level"]
     catch.append({ "name": name, "level": level })
   return catch
 
 @bot.command(description="Genshin build card")
-async def build(ctx, uid: discord.Option(int)):
-    view = discord.ui.View()
-    catch = Catch(uid=uid)
-    for x in range(len(catch)):
-      your_dict = f'{catch[x]["name"]} lv.{catch[x]["level"]}'
-      btn = CharaButton(label=your_dict, uid=str(uid), dict=your_dict, index=x)
-      view.add_item(btn)
-    delete_button = DeleteButton(label='Delete', style=discord.ButtonStyle.red)
-    view.add_item(delete_button)
-    await ctx.respond("キャラ情報取得中", view=view)
+async def build(ctx, uid: discord.Option(int), lang: str = "ja"):
+  view = discord.ui.View()
+  catch = Catch(uid=uid, lang=lang)
+  for x in range(len(catch)):
+    your_dict = f'{catch[x]["name"]} lv.{catch[x]["level"]}'
+    btn = CharaButton(label=your_dict, uid=str(uid), dict=your_dict, index=x)
+    view.add_item(btn)
+  delete_button = DeleteButton(label='Delete', style=discord.ButtonStyle.red)
+  view.add_item(delete_button)
+  await ctx.respond("キャラ情報取得中", view=view)
+
 
 # from dotenv import load_dotenv
 # load_dotenv(".env")
