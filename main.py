@@ -22,7 +22,7 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
   response = request(uid=UID)
   if response:
     user, character, loc = response
-  result = artifact_Calculation(count=count, TYPE=TYPE, data=user, loc=loc)
+  result = artifact_Calculation(count=count, TYPE=TYPE, user=user, loc=loc)
   user_character = user['avatarInfoList'][count]
   constellation = user_character.get("talentIdList", [])
   avatarId = user["playerInfo"]["showAvatarInfoList"][count]["avatarId"]
