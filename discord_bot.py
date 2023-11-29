@@ -52,13 +52,18 @@ class CharaButton(discord.ui.Button):
 def Catch(uid):
   import requests
   catch = list()
-  u = requests.get(f"https://enka.network/api/uid/{uid}").json()
-  l = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/loc.json").json()
-  c = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/characters.json").json()
-  for count in range(len(u['avatarInfoList'])):
-    avatarId = u["playerInfo"]["showAvatarInfoList"][count]["avatarId"]
-    name = l["ja"][str(c[str(avatarId)]["NameTextMapHash"])]
-    level = u["playerInfo"]["showAvatarInfoList"][count]["level"]
+  user = requests.get(f"https://enka.network/api/uid/{uid}").json()
+  json_path = ["loc.json","characters.json"]
+  try:
+    with open(json_path[0], 'r', encoding='utf-8') as lfile: loc = json.load(lfile)
+    with open(json_path[1], 'r', encoding='utf-8') as cfile: chara = json.load(cfile)
+  except:
+    loc = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/loc.json").json()
+    chara = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/characters.json").json()
+  for count in range(len(user['avatarInfoList'])):
+    avatarId = user["playerInfo"]["showAvatarInfoList"][count]["avatarId"]
+    name = loc["ja"][str(chara[str(avatarId)]["NameTextMapHash"])]
+    level = user["playerInfo"]["showAvatarInfoList"][count]["level"]
     catch.append({ "name": name, "level": level })
   return catch
 
