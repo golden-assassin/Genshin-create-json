@@ -8,16 +8,20 @@ def request(uid=default_uid):
   host = "https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store"
   user = requests.get(f"https://enka.network/api/uid/{uid}").json()
   try:
-    with open(json_path[0], 'r', encoding='utf-8') as lfile: loc = json.load(lfile)
-    with open(json_path[1], 'r', encoding='utf-8') as cfile: characters = json.load(cfile)
+    with open(json_path[0], 'r', encoding='utf-8') as locFile: loc = json.load(locFile)
+    with open(json_path[1], 'r', encoding='utf-8') as charaFile: characters = json.load(charaFile)
   except:
     loc = requests.get(f"{host}/loc.json").json()
     characters = requests.get(f"{host}/characters.json").json()
   return user,characters,loc
 
+def r(i):
+  return round(i, 1)
+
 def get_element_name(element_id):
   elements = {"Fire": "炎", "Water": "水", "Wind": "風", "Electric": "雷","Rock": "岩", "Ice": "氷", "Grass": "草"}
-  return elements.get(element_id, "無")
+  return elements.get(element_id)
+
 def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
   response = request(uid=UID)
   if response:
@@ -27,12 +31,13 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
   constellation = user_character.get("talentIdList", [])
   avatarId = user["playerInfo"]["showAvatarInfoList"][count]["avatarId"]
   element_name = get_element_name(character[str(avatarId)]["Element"])
+  fightPropMap = user_character["fightPropMap"]
 
   buf = 0
   fight_prop_keys = ["30", "40", "41", "42", "43", "44", "45", "46"]
   for key in fight_prop_keys:
-    if round(user_character["fightPropMap"][key] * 100) > 0:
-      buf += round(user_character["fightPropMap"][key] * 100,1)
+    if round(fightPropMap[key] * 100) > 0:
+      buf += r(fightPropMap[key] * 100)
       break
 
   talent = []
@@ -68,14 +73,14 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
       "Level": user["playerInfo"]["showAvatarInfoList"][count]["level"],
       "Love": user_character["fetterInfo"]["expLevel"],
       "Status": {
-        "HP": round(user_character["fightPropMap"]["2000"],1),
-        "攻撃力": round(user_character["fightPropMap"]["2001"],1),
-        "防御力": round(user_character["fightPropMap"]["2002"],1),
-        "元素熟知": round(user_character["fightPropMap"]["28"]),
-        "会心率": round(user_character["fightPropMap"]["20"] * 100,1),
-        "会心ダメージ": round(user_character["fightPropMap"]["22"] * 100,1),
-        "元素チャージ効率": round(user_character["fightPropMap"]["23"] * 100,1),
-        f"{element_name}元素ダメージ": round(buf,1)
+        "HP": int(fightPropMap["2000"]),
+        "攻撃力": int(fightPropMap["2001"]),
+        "防御力": int(fightPropMap["2002"]),
+        "元素熟知": int(fightPropMap["28"]),
+        "会心率": r(fightPropMap["20"] * 100),
+        "会心ダメージ": r(fightPropMap["22"] * 100),
+        "元素チャージ効率": r(fightPropMap["23"] * 100),
+        f"{element_name}元素ダメージ": r(buf)
       },
       "Talent": {
         "通常": talent[0],
@@ -83,9 +88,9 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
         "爆発": talent[2],
       },
       "Base":{
-        "HP": round(user_character["fightPropMap"]["1"],1),
-        "攻撃力": round(user_character["fightPropMap"]["4"],1),
-        "防御力": round(user_character["fightPropMap"]["7"],1)
+        "HP": int(fightPropMap["1"]),
+        "攻撃力": int(fightPropMap["4"]),
+        "防御力": int(fightPropMap["7"])
       },
     },
     "Weapon": {
@@ -101,12 +106,12 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
     },
     "Score": {
       "State": result["State"],
-      "total": round(result["total"],1),
-      "flower": round(result["flower"],1),
-      "wing": round(result["wing"],1),
-      "clock": round(result["clock"],1),
-      "cup": round(result["cup"],1),
-      "crown": round(result["crown"],1)
+      "total": r(result["total"]),
+      "flower": r(result["flower"]),
+      "wing": r(result["wing"]),
+      "clock": r(result["clock"]),
+      "cup": r(result["cup"]),
+      "crown": r(result["crown"])
     },
     "Artifacts": result["Artifacts"],
     "元素": element_name,
