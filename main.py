@@ -63,11 +63,6 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
     "name": user["playerInfo"]["nickname"],
     "level": user["playerInfo"]["level"],
     "Character": {
-      "UI": {
-        "avatarId": avatarId,
-        "UI_Name": UI_Name,
-        "UI_Gacha": UI_Gacha
-      },
       "Name": loc["ja"][str(character[str(avatarId)]["NameTextMapHash"])],
       "Const": len(constellation),
       "Level": user["playerInfo"]["showAvatarInfoList"][count]["level"],
@@ -94,7 +89,6 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
       },
     },
     "Weapon": {
-      "UI_weapon": weapon["icon"] ,
       "name": loc["ja"][str(weapon["nameTextMapHash"])],
       "Level": user_character["equipList"][5]["weapon"]["level"],
       "totu": weapon_rate,
@@ -115,6 +109,12 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
       "crown": round(result["crown"],1)
     },
     "Artifacts": result["Artifacts"],
-    "元素": element_name
+    "元素": element_name,
+    "UI": {
+      "UI_weapon": weapon["icon"],
+      "avatarId": avatarId,
+      "UI_Name": UI_Name,
+      "UI_Gacha": UI_Gacha
+    }
   }
   return output_json
