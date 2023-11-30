@@ -28,11 +28,11 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
   avatarId = user["playerInfo"]["showAvatarInfoList"][count]["avatarId"]
   element_name = get_element_name(character[str(avatarId)]["Element"])
 
-  buf = 1
+  buf = 0
   fight_prop_keys = ["30", "40", "41", "42", "43", "44", "45", "46"]
   for key in fight_prop_keys:
     if round(user_character["fightPropMap"][key] * 100) > 0:
-      buf += round(user_character["fightPropMap"][key] * 100,1) - 1
+      buf += round(user_character["fightPropMap"][key] * 100,1)
       break
 
   talent = []
