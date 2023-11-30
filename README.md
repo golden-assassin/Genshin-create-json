@@ -56,12 +56,11 @@ Genshin ArtifacterのGenerater.pyで使用されているdata.jsonを上書き�
    
    # generation関数
    
-   # CharacterData :dict = data.get('Character')の下
-   UI: dict = CharacterData.get('UI')
-   avatarId : int = UI.get('avatarId')
-   UI_Gacha : dict = UI.get('UI_Gacha')
-   # Weapon : dict = data.get('Weapon')の下
-   UI_weapon_Gacha : dict = Weapon.get("UI_weapon")
+    UI: dict = data.get('UI')
+    avatarId : int = UI.get('avatarId')
+    UI_Gacha : dict = UI.get('UI_Gacha')
+    UI_weapon_Gacha : dict = UI.get("UI_weapon")
+
    
    # キャラクター
    CharacterCostume = CharacterData.get('Costume')
