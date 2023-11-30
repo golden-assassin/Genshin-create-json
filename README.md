@@ -55,7 +55,9 @@ Genshin ArtifacterのGenerater.pyで使用されているdata.jsonを上書き�
    import requests,os
    
    # generation関数
-   
+
+    characters = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/characters.json").json()
+    loc = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/loc.json").json()
     UI: dict = data.get('UI')
     avatarId : int = UI.get('avatarId')
     UI_Gacha : dict = UI.get('UI_Gacha')
