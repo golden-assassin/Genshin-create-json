@@ -39,7 +39,7 @@ class CharaButton(discord.ui.Button):
   async def select_callback(self, interaction: discord.Interaction):
     selected_option = interaction.data['values'][0]
     message = await interaction.response.send_message(f'選択されたオプション: {selected_option}')
-    result = dataSetup(UID=self.uid, count=self.index, TYPE=selected_option, lang=self.lang)
+    result = dataSetup(UID=self.uid, count=self.index, TYPE=selected_option)
     file_path = 'data.json'
     print(result)
     update_json_file(file_path, result)
@@ -73,7 +73,7 @@ async def build(ctx, uid: discord.Option(int), lang: str = "ja"):
   catch = Catch(uid=uid, lang=lang)
   for x in range(len(catch)):
     your_dict = f'{catch[x]["name"]} lv.{catch[x]["level"]}'
-    btn = CharaButton(label=your_dict, uid=str(uid), dict=your_dict, index=x)
+    btn = CharaButton(label=your_dict, uid=str(uid), dict=your_dict, index=x, lang=lang)
     view.add_item(btn)
   delete_button = DeleteButton(label='Delete', style=discord.ButtonStyle.red)
   view.add_item(delete_button)
