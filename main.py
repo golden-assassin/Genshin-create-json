@@ -36,8 +36,9 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
   buf = 0
   fight_prop_keys = ["30", "40", "41", "42", "43", "44", "45", "46"]
   for key in fight_prop_keys:
-    if round(fightPropMap[key] * 100) > 0:
-      buf += r(fightPropMap[key] * 100)
+    x100 = r(fightPropMap[key] * 100)
+    if x100 > 0:
+      buf += x100
       break
 
   talent = []
