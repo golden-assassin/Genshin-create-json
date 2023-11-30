@@ -1,26 +1,27 @@
 import json
 
 def artifact_Calculation(count=0,TYPE="攻撃力",user=None,loc=None):
+  F,E,A,P = 'FIGHT_PROP_','元素ダメージ','_ADD_HURT','パーセンテージ'
   prop_to_japanese = {
-    "FIGHT_PROP_HP_PERCENT": "HPパーセンテージ",
-    "FIGHT_PROP_ATTACK_PERCENT": "攻撃パーセンテージ",
-    "FIGHT_PROP_DEFENSE_PERCENT": "防御パーセンテージ",
-    "FIGHT_PROP_ELEMENT_MASTERY": "元素熟知",
-    "FIGHT_PROP_CRITICAL_HURT": "会心ダメージ",
-    "FIGHT_PROP_CRITICAL": "会心率",
-    "FIGHT_PROP_HP": "HP",
-    "FIGHT_PROP_CHARGE_EFFICIENCY": "元素チャージ効率",
-    "FIGHT_PROP_ATTACK": "攻撃力",
-    "FIGHT_PROP_DEFENSE": "防御力",
-    "FIGHT_PROP_HEAL_ADD": "与える治癒効果",
-    "FIGHT_PROP_PHYSICAL_ADD_HURT": "物理ダメージ",
-    "FIGHT_PROP_FIRE_ADD_HURT": "炎元素ダメージ",
-    "FIGHT_PROP_ELEC_ADD_HURT": "雷元素ダメージ",
-    "FIGHT_PROP_WATER_ADD_HURT": "水元素ダメージ",
-    "FIGHT_PROP_WIND_ADD_HURT": "風元素ダメージ",
-    "FIGHT_PROP_ICE_ADD_HURT": "氷元素ダメージ",
-    "FIGHT_PROP_ROCK_ADD_HURT": "岩元素ダメージ",
-    "FIGHT_PROP_GRASS_ADD_HURT": "草元素ダメージ",
+    f"{F}HP_PERCENT":f"HP{P}",
+    f"{F}ATTACK_PERCENT":f"攻撃{P}",
+    f"{F}DEFENSE_PERCENT":f"防御{P}",
+    f"{F}ELEMENT_MASTERY":"元素熟知",
+    f"{F}HP":"HP",
+    f"{F}ATTACK":"攻撃力",
+    f"{F}DEFENSE":"防御力",
+    f"{F}CRITICAL_HURT":"会心ダメージ",
+    f"{F}CRITICAL":"会心率",
+    f"{F}CHARGE_EFFICIENCY":"元素チャージ効率",
+    f"{F}HEAL_ADD":"与える治癒効果",
+    f"{F}PHYSICAL{A}":"物理ダメージ",
+    f"{F}FIRE{A}":f"炎{E}",
+    f"{F}ELEC{A}":f"雷{E}",
+    f"{F}WATER{A}":f"水{E}",
+    f"{F}WIND{A}":f"風{E}",
+    f"{F}ICE{A}":f"氷{E}",
+    f"{F}ROCK{A}":f"岩{E}",
+    f"{F}GRASS{A}":f"草{E}"
   }
   if "avatarInfoList" in user and len(user["avatarInfoList"]) > 0:
     first_avatar_info = user["avatarInfoList"][count]
@@ -29,30 +30,31 @@ def artifact_Calculation(count=0,TYPE="攻撃力",user=None,loc=None):
       if Info and len(Info) > 0:
         flower, wing, clock, cup, crown = 0, 0, 0, 0, 0
         score,Total = 0,0
+        result_json = {}
         mainlist,receipt = [],[]
-        for j in range(5):
+        for p,parts in enumerate(['flower',"wing","clock","cup","crown"]):
           sublist = []
           for i in range(4):
-            if j < len(Info) and "flat" in Info[j] and "reliquarySubstats" in Info[j]["flat"] and i < len(Info[j]["flat"]["reliquarySubstats"]):
-              artifact = Info[j]["flat"]["reliquarySubstats"][i]
+            if p < len(Info) and "flat" in Info[p] and "reliquarySubstats" in Info[p]["flat"] and i < len(Info[p]["flat"]["reliquarySubstats"]):
+              artifact = Info[p]["flat"]["reliquarySubstats"][i]
               statValue = float(artifact["statValue"])
               converted_value = round(statValue, 1)
               value = int(converted_value) if converted_value.is_integer() else converted_value
               part = artifact["appendPropId"]
-              if part == "FIGHT_PROP_CRITICAL_HURT": score += value
-              if part == "FIGHT_PROP_CRITICAL": score += value * 2
-              if TYPE == "HP" and part == "FIGHT_PROP_HP_PERCENT": score += value
-              if TYPE == "攻撃力" and part == "FIGHT_PROP_ATTACK_PERCENT": score += value
-              if TYPE == "防御力" and part == "FIGHT_PROP_DEFENSE_PERCENT": score += value
-              if TYPE == "元素チャージ効率" and part == "FIGHT_PROP_CHARGE_EFFICIENCY": score += value
-              if TYPE == "元素熟知" and part == "FIGHT_PROP_ELEMENT_MASTERY": score += value * 0.25
-              if j == 0: flower += score
-              if j == 1: wing += score
-              if j == 2: clock += score
-              if j == 3: cup += score
-              if j == 4: crown += score
+              if part == f"{F}CRITICAL_HURT": score += value
+              if part == f"{F}CRITICAL": score += value * 2
+              if TYPE == "HP" and part == f"{F}HP_PERCENT": score += value
+              if TYPE == "攻撃力" and part == f"{F}ATTACK_PERCENT": score += value
+              if TYPE == "防御力" and part == f"{F}DEFENSE_PERCENT": score += value
+              if TYPE == "元素チャージ効率" and part == f"{F}CHARGE_EFFICIENCY": score += value
+              if TYPE == "元素熟知" and part == f"{F}ELEMENT_MASTERY": score += value * 0.25
+              if p == 0: flower += score
+              if p == 1: wing += score
+              if p == 2: clock += score
+              if p == 3: cup += score
+              if p == 4: crown += score
               score = 0
-              reliquary = Info[j]["flat"]["reliquaryMainstat"]
+              reliquary = Info[p]["flat"]["reliquaryMainstat"]
               sub_ja_name = prop_to_japanese.get(part, "")
               sublist.append({
                 "option": sub_ja_name,
@@ -63,23 +65,21 @@ def artifact_Calculation(count=0,TYPE="攻撃力",user=None,loc=None):
           receipt.append(sublist)
           main_ja_name = prop_to_japanese.get(reliquary["mainPropId"], "")
           mainlist.append({"option":main_ja_name,"value":reliquary["statValue"]})
-        Total += (flower + wing + clock + cup + crown)
-        result_json = {}
-        for i,parts in enumerate(['flower',"wing","clock","cup","crown"]):
-          artifactID = Info[i]['flat']['setNameTextMapHash']
+          artifactID = Info[p]['flat']['setNameTextMapHash']
           current_json = {
             parts: {
-              "icon": Info[i]["flat"]["icon"],
+              "icon": Info[p]["flat"]["icon"],
               "type": loc["ja"][str(artifactID)],
-              "Level":  Info[i]["reliquary"]["level"] - 1,
-              "rarelity": Info[i]["flat"]["rankLevel"],
-              "main": mainlist[i],
-              "sub": receipt[i]
+              "Level":  Info[p]["reliquary"]["level"] - 1,
+              "rarelity": Info[p]["flat"]["rankLevel"],
+              "main": mainlist[p],
+              "sub": receipt[p]
             }
           }
           result_json.update(current_json)
         result_json_str = json.dumps(result_json, indent=2)
         result_json_object = json.loads(result_json_str)
+        Total += (flower + wing + clock + cup + crown)
   result = {
     "State": TYPE,
     "total": Total,
