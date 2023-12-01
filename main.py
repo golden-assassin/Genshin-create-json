@@ -15,8 +15,8 @@ def request(uid=default_uid):
     characters = requests.get(f"{host}/characters.json").json()
   return user,characters,loc
 
-def r(i):
-  return round(i, 1)
+def discard(idx):
+  return round(idx, 1)
 
 def get_element_name(element_id):
   elements = {"Fire": "炎", "Water": "水", "Wind": "風", "Electric": "雷","Rock": "岩", "Ice": "氷", "Grass": "草"}
@@ -24,8 +24,7 @@ def get_element_name(element_id):
 
 def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
   response = request(uid=UID)
-  if response:
-    user, character, loc = response
+  if response: user, character, loc = response
   result = artifact_Calculation(count=count, TYPE=TYPE, user=user, loc=loc)
   user_character = user['avatarInfoList'][count]
   constellation = user_character.get("talentIdList", [])
@@ -78,10 +77,10 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
         "攻撃力": int(fightPropMap["2001"]),
         "防御力": int(fightPropMap["2002"]),
         "元素熟知": int(fightPropMap["28"]),
-        "会心率": r(fightPropMap["20"] * 100),
-        "会心ダメージ": r(fightPropMap["22"] * 100),
-        "元素チャージ効率": r(fightPropMap["23"] * 100),
-        f"{element_name}元素ダメージ": r(buf)
+        "会心率": discard(fightPropMap["20"] * 100),
+        "会心ダメージ": discard(fightPropMap["22"] * 100),
+        "元素チャージ効率": discard(fightPropMap["23"] * 100),
+        f"{element_name}元素ダメージ": discard(buf)
       },
       "Talent": {
         "通常": talent[0],
@@ -107,12 +106,12 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
     },
     "Score": {
       "State": result["State"],
-      "total": r(result["total"]),
-      "flower": r(result["flower"]),
-      "wing": r(result["wing"]),
-      "clock": r(result["clock"]),
-      "cup": r(result["cup"]),
-      "crown": r(result["crown"])
+      "total": discard(result["total"]),
+      "flower": discard(result["flower"]),
+      "wing": discard(result["wing"]),
+      "clock": discard(result["clock"]),
+      "cup": discard(result["cup"]),
+      "crown": discard(result["crown"])
     },
     "Artifacts": result["Artifacts"],
     "元素": element_name,
