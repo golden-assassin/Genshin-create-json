@@ -15,9 +15,6 @@ def request(uid=default_uid):
     characters = requests.get(f"{host}/characters.json").json()
   return user,characters,loc
 
-def discard(idx):
-  return round(idx, 1)
-
 def get_element_name(element_id):
   elements = {"Fire": "炎", "Water": "水", "Wind": "風", "Electric": "雷","Rock": "岩", "Ice": "氷", "Grass": "草"}
   return elements.get(element_id)
@@ -73,14 +70,14 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
       "Level": user["playerInfo"]["showAvatarInfoList"][count]["level"],
       "Love": user_character["fetterInfo"]["expLevel"],
       "Status": {
-        "HP": int(fightPropMap["2000"]),
-        "攻撃力": int(fightPropMap["2001"]),
-        "防御力": int(fightPropMap["2002"]),
-        "元素熟知": int(fightPropMap["28"]),
-        "会心率": discard(fightPropMap["20"] * 100),
-        "会心ダメージ": discard(fightPropMap["22"] * 100),
-        "元素チャージ効率": discard(fightPropMap["23"] * 100),
-        f"{element_name}元素ダメージ": discard(buf)
+        "HP": int(round(fightPropMap["2000"], 0)),
+        "攻撃力": int(round(fightPropMap["2001"], 0)),
+        "防御力": int(round(fightPropMap["2002"], 0)),
+        "元素熟知": int(round(fightPropMap["28"], 0)),
+        "会心率": round(fightPropMap["20"] * 100, 1),
+        "会心ダメージ": round(fightPropMap["22"] * 100, 1),
+        "元素チャージ効率": round(fightPropMap["23"] * 100, 1),
+        f"{element_name}元素ダメージ": round(buf)
       },
       "Talent": {
         "通常": talent[0],
@@ -106,12 +103,12 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
     },
     "Score": {
       "State": result["State"],
-      "total": discard(result["total"]),
-      "flower": discard(result["flower"]),
-      "wing": discard(result["wing"]),
-      "clock": discard(result["clock"]),
-      "cup": discard(result["cup"]),
-      "crown": discard(result["crown"])
+      "total": round(result["total"], 1),
+      "flower": round(result["flower"], 1),
+      "wing": round(result["wing"], 1),
+      "clock": round(result["clock"], 1),
+      "cup": round(result["cup"], 1),
+      "crown": round(result["crown"], 1)
     },
     "Artifacts": result["Artifacts"],
     "元素": element_name,
