@@ -3,6 +3,7 @@ import os
 from main import *
 from Generater import *
 import json
+import requests
 bot = discord.Bot()
 
 def update_json_file(file_path, new_data):
@@ -50,7 +51,6 @@ class CharaButton(discord.ui.Button):
     await message.delete_original_response()
 
 def Catch(uid, lang="ja"):
-  import requests
   catch = list()
   user = requests.get(f"https://enka.network/api/uid/{uid}")
   if user.status_code == 200:
