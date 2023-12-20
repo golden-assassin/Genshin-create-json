@@ -30,7 +30,7 @@ class CharaButton(discord.ui.Button):
     self.index = index
     self.lang = lang
   async def callback(self, interaction: discord.Interaction):
-    choices = ["攻撃力", "防御力", "HP", "元素チャージ効率", "元素熟知"]
+    choices = ["攻撃力", "防御力", "HP", "元素チャージ効率", "元素熟知","会心のみ"]
     options = [discord.SelectOption(label=choice, value=choice) for choice in choices]
     select = discord.ui.Select(placeholder='Choose an option', options=options)
     select.callback = self.select_callback
@@ -52,7 +52,12 @@ class CharaButton(discord.ui.Button):
 def Catch(uid, lang="ja"):
   import requests
   catch = list()
-  user = requests.get(f"https://enka.network/api/uid/{uid}").json()
+  user = requests.get(f"https://enka.network/api/uid/{uid}")
+  if user.status_code == 200:
+    user = user.json()
+  else:
+    return False,user.status_code
+
   json_path = ["loc.json","characters.json"]
   try:
     with open(json_path[0], 'r', encoding='utf-8') as lfile: loc = json.load(lfile)
@@ -71,13 +76,17 @@ def Catch(uid, lang="ja"):
 async def build(ctx, uid: discord.Option(int), lang: str = "ja"):
   view = discord.ui.View()
   catch = Catch(uid=uid, lang=lang)
-  for x in range(len(catch)):
-    your_dict = f'{catch[x]["name"]} lv.{catch[x]["level"]}'
-    btn = CharaButton(label=your_dict, uid=str(uid), dict=your_dict, index=x, lang=lang)
-    view.add_item(btn)
-  delete_button = DeleteButton(label='Delete', style=discord.ButtonStyle.red)
-  view.add_item(delete_button)
-  await ctx.respond("キャラ情報取得中", view=view)
+  if catch == True:
+    for x in range(len(catch)):
+      your_dict = f'{catch[x]["name"]} lv.{catch[x]["level"]}'
+      btn = CharaButton(label=your_dict, uid=str(uid), dict=your_dict, index=x, lang=lang)
+      view.add_item(btn)
+    delete_button = DeleteButton(label='Delete', style=discord.ButtonStyle.red)
+    view.add_item(delete_button)
+    await ctx.respond("キャラ情報取得中", view=view)
+  else:
+    await ctx.respond(f"サーバーダウンしてるよ～ ステータスコード:{catch[1]}")
+
 
 
 # from dotenv import load_dotenv
