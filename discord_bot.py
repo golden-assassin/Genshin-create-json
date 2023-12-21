@@ -2,8 +2,11 @@ import discord
 import os
 from main import *
 from Generater import *
-import json
+from dotenv import load_dotenv
 import requests
+import json
+
+load_dotenv(".env")
 bot = discord.Bot()
 
 def update_json_file(file_path, new_data):
@@ -55,28 +58,25 @@ def Catch(uid, lang="ja"):
   user = requests.get(f"https://enka.network/api/uid/{uid}")
   if user.status_code == 200:
     user = user.json()
-  else:
-    return False,user.status_code
-
-  json_path = ["loc.json","characters.json"]
-  try:
-    with open(json_path[0], 'r', encoding='utf-8') as lfile: loc = json.load(lfile)
-    with open(json_path[1], 'r', encoding='utf-8') as cfile: chara = json.load(cfile)
-  except:
-    loc = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/loc.json").json()
-    chara = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/characters.json").json()
-  for count in range(len(user['avatarInfoList'])):
-    avatarId = user["playerInfo"]["showAvatarInfoList"][count]["avatarId"]
-    name = loc[lang][str(chara[str(avatarId)]["NameTextMapHash"])]
-    level = user["playerInfo"]["showAvatarInfoList"][count]["level"]
-    catch.append({ "name": name, "level": level })
-  return catch
+    json_path = ["loc.json","characters.json"]
+    try:
+      with open(json_path[0], 'r', encoding='utf-8') as lfile: loc = json.load(lfile)
+      with open(json_path[1], 'r', encoding='utf-8') as cfile: chara = json.load(cfile)
+    except:
+      loc = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/loc.json").json()
+      chara = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/characters.json").json()
+    for count in range(len(user['avatarInfoList'])):
+      avatarId = user["playerInfo"]["showAvatarInfoList"][count]["avatarId"]
+      name = loc[lang][str(chara[str(avatarId)]["NameTextMapHash"])]
+      level = user["playerInfo"]["showAvatarInfoList"][count]["level"]
+      catch.append({ "name": name, "level": level })
+    return catch
 
 @bot.command(description="Genshin build card")
 async def build(ctx, uid: discord.Option(int), lang: str = "ja"):
   view = discord.ui.View()
   catch = Catch(uid=uid, lang=lang)
-  if catch == True:
+  if catch:
     for x in range(len(catch)):
       your_dict = f'{catch[x]["name"]} lv.{catch[x]["level"]}'
       btn = CharaButton(label=your_dict, uid=str(uid), dict=your_dict, index=x, lang=lang)
@@ -85,12 +85,6 @@ async def build(ctx, uid: discord.Option(int), lang: str = "ja"):
     view.add_item(delete_button)
     await ctx.respond("キャラ情報取得中", view=view)
   else:
-    await ctx.respond(f"サーバーダウンしてるよ～ ステータスコード:{catch[1]}")
+    await ctx.respond(f"サーバーダウンしてるよ～")
 
-
-
-# from dotenv import load_dotenv
-# load_dotenv(".env")
-# bot.run(os.getenv("TOKEN"))
-
-bot.run("TOKEN")
+bot.run(os.getenv("TOKEN"))
