@@ -55,9 +55,8 @@ class CharaButton(discord.ui.Button):
 
 def Catch(uid, lang="ja"):
   catch = list()
-  user = requests.get(f"https://enka.network/api/uid/{uid}")
+  user = requests.get(f"https://enka.network/api/uid/{uid}?info")
   if user.status_code == 200:
-    user = user.json()
     json_path = ["loc.json","characters.json"]
     try:
       with open(json_path[0], 'r', encoding='utf-8') as lfile: loc = json.load(lfile)
@@ -65,10 +64,12 @@ def Catch(uid, lang="ja"):
     except:
       loc = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/loc.json").json()
       chara = requests.get("https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/characters.json").json()
-    for count in range(len(user['avatarInfoList'])):
-      avatarId = user["playerInfo"]["showAvatarInfoList"][count]["avatarId"]
+    user = user.json()
+    info = user["playerInfo"]["showAvatarInfoList"]
+    for count in range(len(info)):
+      avatarId = info[count]["avatarId"]
       name = loc[lang][str(chara[str(avatarId)]["NameTextMapHash"])]
-      level = user["playerInfo"]["showAvatarInfoList"][count]["level"]
+      level = info[count]["level"]
       catch.append({ "name": name, "level": level })
     return catch
 
