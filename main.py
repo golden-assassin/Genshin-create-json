@@ -77,7 +77,7 @@ def dataSetup(UID=826487438,count=0,TYPE="攻撃力"):
         "会心率": round(fightPropMap["20"] * 100, 1),
         "会心ダメージ": round(fightPropMap["22"] * 100, 1),
         "元素チャージ効率": round(fightPropMap["23"] * 100, 1),
-        f"{element_name}元素ダメージ": round(buf)
+        f"{element_name}元素ダメージ": round(buf,1)
       },
       "Talent": {
         "通常": talent[0],
