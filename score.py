@@ -1,27 +1,18 @@
 import json
 
 def artifact_Calculation(count=0,TYPE="攻撃力",user=None,loc=None):
-  F,E,A,P = 'FIGHT_PROP_','元素ダメージ','_ADD_HURT','パーセンテージ'
+  E,P,F,A = '元素ダメージ','パーセンテージ','FIGHT_PROP_','_ADD_HURT'
   prop_to_japanese = {
     f"{F}HP_PERCENT":f"HP{P}",
     f"{F}ATTACK_PERCENT":f"攻撃{P}",
     f"{F}DEFENSE_PERCENT":f"防御{P}",
     f"{F}ELEMENT_MASTERY":"元素熟知",
-    f"{F}HP":"HP",
-    f"{F}ATTACK":"攻撃力",
-    f"{F}DEFENSE":"防御力",
-    f"{F}CRITICAL_HURT":"会心ダメージ",
-    f"{F}CRITICAL":"会心率",
-    f"{F}CHARGE_EFFICIENCY":"元素チャージ効率",
-    f"{F}HEAL_ADD":"与える治癒効果",
-    f"{F}PHYSICAL{A}":"物理ダメージ",
-    f"{F}FIRE{A}":f"炎{E}",
-    f"{F}ELEC{A}":f"雷{E}",
-    f"{F}WATER{A}":f"水{E}",
-    f"{F}WIND{A}":f"風{E}",
-    f"{F}ICE{A}":f"氷{E}",
-    f"{F}ROCK{A}":f"岩{E}",
-    f"{F}GRASS{A}":f"草{E}"
+    f"{F}HP":"HP",f"{F}ATTACK":"攻撃力",f"{F}DEFENSE":"防御力",
+    f"{F}CRITICAL_HURT":"会心ダメージ",f"{F}CRITICAL":"会心率",
+    f"{F}CHARGE_EFFICIENCY":"元素チャージ効率",f"{F}HEAL_ADD":"与える治癒効果",
+    f"{F}PHYSICAL{A}":"物理ダメージ",f"{F}FIRE{A}":f"炎{E}",
+    f"{F}ELEC{A}":f"雷{E}",f"{F}WATER{A}":f"水{E}",f"{F}WIND{A}":f"風{E}",
+    f"{F}ICE{A}":f"氷{E}",f"{F}ROCK{A}":f"岩{E}",f"{F}GRASS{A}":f"草{E}"
   }
   if "avatarInfoList" in user and len(user["avatarInfoList"]) > 0:
     first_avatar_info = user["avatarInfoList"][count]
@@ -54,7 +45,6 @@ def artifact_Calculation(count=0,TYPE="攻撃力",user=None,loc=None):
               if p == 3: cup += score
               if p == 4: crown += score
               score = 0
-              reliquary = Info[p]["flat"]["reliquaryMainstat"]
               sub_ja_name = prop_to_japanese.get(part, "")
               sublist.append({
                 "option": sub_ja_name,
@@ -63,6 +53,7 @@ def artifact_Calculation(count=0,TYPE="攻撃力",user=None,loc=None):
             else:
               continue
           receipt.append(sublist)
+          reliquary = Info[p]["flat"]["reliquaryMainstat"]
           main_ja_name = prop_to_japanese.get(reliquary["mainPropId"], "")
           mainlist.append({"option":main_ja_name,"value":reliquary["statValue"]})
           artifactID = Info[p]['flat']['setNameTextMapHash']
