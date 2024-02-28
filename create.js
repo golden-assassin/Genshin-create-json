@@ -1,3 +1,5 @@
+console.log('load');
+
 const E = '元素ダメージ', P = 'パーセンテージ', F = 'FIGHT_PROP_', A = '_ADD_HURT';
 const prop_to_japanese = {[`${F}HP_PERCENT`]: `HP${P}`,[`${F}ATTACK_PERCENT`]: `攻撃${P}`,[`${F}DEFENSE_PERCENT`]: `防御${P}`,[`${F}ELEMENT_MASTERY`]: '元素熟知',[`${F}HP`]: 'HP',[`${F}ATTACK`]: '攻撃力',[`${F}DEFENSE`]: '防御力',[`${F}CRITICAL_HURT`]: '会心ダメージ',[`${F}CRITICAL`]: '会心率',[`${F}CHARGE_EFFICIENCY`]: '元素チャージ効率',[`${F}HEAL_ADD`]: '与える治癒効果',[`${F}PHYSICAL${A}`]: '物理ダメージ',[`${F}FIRE${A}`]: `炎${E}`,[`${F}ELEC${A}`]: `雷${E}`,[`${F}WATER${A}`]: `水${E}`,[`${F}WIND${A}`]: `風${E}`,[`${F}ICE${A}`]: `氷${E}`,[`${F}ROCK${A}`]: `岩${E}`,[`${F}GRASS${A}`]: `草${E}`};
 
