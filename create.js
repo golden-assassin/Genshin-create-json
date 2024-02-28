@@ -212,3 +212,29 @@ function create(uid=null,count=0,TYPE="攻撃力") {
   });
 }
 // create(uid=826487438,count=1,TYPE="HP");
+
+const host = "https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store";
+const lang = "ja";
+async function fetchData(host) {
+  try {
+    const req = await fetch(host);
+    const res = await req.json();
+    return res;
+  } catch (error) {
+    return false;
+  }
+}
+async function fetchDataAndLog(uid) {
+  const loc = await fetchData(`${host}/loc.json`);
+  const characters = await fetchData(`${host}/characters.json`);
+  const data = await fetchData(`https://enka.network/api/uid/${uid}?info`);
+  const Infolist = data.playerInfo.showAvatarInfoList;
+  const select = [];
+  for (const avatar of Infolist) {
+    const character = loc[lang][characters[avatar.avatarId]["NameTextMapHash"]];
+    select.push({'character': character, 'level': avatar.level});
+  }
+  return select;
+}
+// fetchDataAndLog(uid=826487438);
+
