@@ -1,7 +1,7 @@
-console.log('load');
+console.log('load v1.0.1');
 
-const E = '元素ダメージ', P = 'パーセンテージ', F = 'FIGHT_PROP_', A = '_ADD_HURT';
-const prop_to_japanese = {[`${F}HP_PERCENT`]: `HP${P}`,[`${F}ATTACK_PERCENT`]: `攻撃${P}`,[`${F}DEFENSE_PERCENT`]: `防御${P}`,[`${F}ELEMENT_MASTERY`]: '元素熟知',[`${F}HP`]: 'HP',[`${F}ATTACK`]: '攻撃力',[`${F}DEFENSE`]: '防御力',[`${F}CRITICAL_HURT`]: '会心ダメージ',[`${F}CRITICAL`]: '会心率',[`${F}CHARGE_EFFICIENCY`]: '元素チャージ効率',[`${F}HEAL_ADD`]: '与える治癒効果',[`${F}PHYSICAL${A}`]: '物理ダメージ',[`${F}FIRE${A}`]: `炎${E}`,[`${F}ELEC${A}`]: `雷${E}`,[`${F}WATER${A}`]: `水${E}`,[`${F}WIND${A}`]: `風${E}`,[`${F}ICE${A}`]: `氷${E}`,[`${F}ROCK${A}`]: `岩${E}`,[`${F}GRASS${A}`]: `草${E}`};
+const E = "元素ダメージ", P = "パーセンテージ", F = "FIGHT_PROP_", A = "_ADD_HURT";
+const prop_to_japanese = {[`${F}HP_PERCENT`]: `HP${P}`,[`${F}ATTACK_PERCENT`]: `攻撃${P}`,[`${F}DEFENSE_PERCENT`]: `防御${P}`,[`${F}ELEMENT_MASTERY`]: "元素熟知",[`${F}HP`]: "HP",[`${F}ATTACK`]: "攻撃力",[`${F}DEFENSE`]: "防御力",[`${F}CRITICAL_HURT`]: "会心ダメージ",[`${F}CRITICAL`]: "会心率",[`${F}CHARGE_EFFICIENCY`]: "元素チャージ効率",[`${F}HEAL_ADD`]: "与える治癒効果",[`${F}PHYSICAL${A}`]: "物理ダメージ",[`${F}FIRE${A}`]: `炎${E}`,[`${F}ELEC${A}`]: `雷${E}`,[`${F}WATER${A}`]: `水${E}`,[`${F}WIND${A}`]: `風${E}`,[`${F}ICE${A}`]: `氷${E}`,[`${F}ROCK${A}`]: `岩${E}`,[`${F}GRASS${A}`]: `草${E}`};
 
 async function request(uid) {
   const host = "https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store";
@@ -171,7 +171,7 @@ function artifact_Calculation(count,TYPE,user=null,loc=null) {
           const main_ja_name = prop_to_japanese[reliquary.mainPropId] || "";
           mainlist.push({ option: main_ja_name, value: reliquary.statValue });
           const artifactID = Info[p].flat.setNameTextMapHash;
-          const parts = ['flower', 'wing', 'clock', 'cup', 'crown']
+          const parts = ["flower", "wing", "clock", "cup", "crown"]
           const current_json = {
             [parts[p]]: {
               icon: Info[p].flat.icon,
@@ -203,11 +203,14 @@ function artifact_Calculation(count,TYPE,user=null,loc=null) {
   }
 }
 
-function create(uid=null,count=0,TYPE='攻撃力') {
+function create(uid=null,count=0,TYPE="攻撃力") {
   if (uid===null) return null;
   return dataSetup(uid,count,TYPE).then((data) => {
-    console.log(data);
+    console.log('data:',data);
+    return data;
   }).catch((error) => {
-    console.error(error);
+    console.log('error:',error)
+    return error;
   });
 }
+// create(uid=826487438,count=1,TYPE="HP");
