@@ -169,7 +169,7 @@ function artifact_Calculation(count,TYPE,user=null,loc=null) {
           const main_ja_name = prop_to_japanese[reliquary.mainPropId] || "";
           mainlist.push({ option: main_ja_name, value: reliquary.statValue });
           const artifactID = Info[p].flat.setNameTextMapHash;
-          const parts = ["flower", "wing", "clock", "cup", "crown"]
+          const parts = ["flower", "wing", "clock", "cup", "crown"];
           const current_json = {
             [parts[p]]: {
               icon: Info[p].flat.icon,
