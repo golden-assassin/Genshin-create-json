@@ -12,7 +12,7 @@ Genshin ArtifacterのGenerater.pyで使用されているdata.jsonを上書き�
    ```python
    # 559行
    Base.show()
-   Base.save(f'{cwd}/Tests/Image.png')
+   Base.save(f'{cwd}/Tests/Image.png') # ここはpath変えるだけ
 
    # 583行
    generation(read_json('data.json'))
@@ -42,6 +42,8 @@ Genshin ArtifacterのGenerater.pyで使用されているdata.jsonを上書き�
      result = dataSetup(UID=UID)
      update_json_file(file_path, result)
      generation(read_json('data.json'))
+
+   
    ```
 
 
@@ -51,6 +53,8 @@ Genshin ArtifacterのGenerater.pyで使用されているdata.jsonを上書き�
 3. Generater.py 書き換え
 
    ```py
+
+   # Base.save(f'{cwd}/Image.png') # 566行〜？ リターンの上に書いてね
    
    import requests,os
    
